@@ -1,3 +1,146 @@
+## 🧪 API Testing with Keploy
+
+This project integrates **Keploy** for automated API recording and replay testing.
+
+Keploy captures real API traffic from the FastAPI backend and generates reusable test cases automatically.
+
+### ✨ What Keploy Tests
+
+* Resume upload APIs
+* Interview session creation
+* Question generation
+* Feedback generation
+* Speech synthesis endpoints
+* Health check endpoints
+
+---
+
+## 🐳 Docker + Keploy Setup
+
+### Build Docker Image
+
+```bash
+docker compose build
+```
+
+### Start Application
+
+```bash
+docker compose up
+```
+
+Backend runs on:
+
+```text
+http://localhost:8000
+```
+
+Frontend runs on:
+
+```text
+http://localhost:8501
+```
+
+---
+
+## 🎥 Record API Test Cases
+
+Start Keploy recording:
+
+```bash
+keploy record -c "docker compose up" --container-name "interview-app" --build-delay 30
+```
+
+Then trigger APIs from:
+
+* Swagger Docs (`/docs`)
+* Streamlit frontend
+* Postman
+
+Recorded test cases are stored in:
+
+```text
+keploy/keploy/test-set-*/tests/
+```
+
+---
+
+## ▶️ Replay Recorded Tests
+
+Run automated replay testing:
+
+```bash
+keploy test -c "docker compose up" --container-name "interview-app"
+```
+
+Keploy will:
+
+* Replay recorded API requests
+* Compare responses
+* Validate API behavior automatically
+
+---
+
+## 📂 Keploy Project Structure
+
+```text
+keploy/
+└── keploy/
+    ├── test-set-0/
+    ├── test-set-1/
+    ├── test-set-2/
+    └── reports/
+```
+
+---
+
+## ⚠️ Important Docker Networking Notes
+
+Since the backend runs inside Docker and Ollama runs on the Windows host machine:
+
+### Backend → Ollama Connection
+
+`utils/ollama_client.py`
+
+```python
+OLLAMA_BASE_URL = "http://host.docker.internal:11434"
+```
+
+### Frontend → Backend Connection
+
+`frontend/streamlit_app.py`
+
+```python
+API_HOST = "localhost"
+```
+
+---
+
+## 🚀 Benefits of Keploy Integration
+
+* Automated API regression testing
+* Zero manual test writing
+* Replay-based backend validation
+* Easier debugging for AI workflows
+* Production-style API observability
+
+---
+
+## 🛠️ Tech Stack
+
+* FastAPI
+* Streamlit
+* Ollama
+* Faster-Whisper
+* pyttsx3
+* Docker
+* Keploy
+* Python
+
+```
+```
+
+
 # 🎙️ AI Voice Interview Agent — Offline Edition
 
 A fully local, fully free AI-powered mock interview system.
