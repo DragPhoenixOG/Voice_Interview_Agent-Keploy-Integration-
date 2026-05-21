@@ -30,6 +30,8 @@ TTS_RATE   = int(os.getenv("TTS_RATE", "400"))      # Words per minute
 TTS_VOLUME = float(os.getenv("TTS_VOLUME", "1.0"))  # 0.0 – 1.0
 TTS_VOICE_INDEX = int(os.getenv("TTS_VOICE_INDEX", "0"))
 
+
+
 # pyttsx3 is NOT thread-safe — use a lock for all engine calls
 _tts_lock = threading.Lock()
 
@@ -40,6 +42,7 @@ def _get_engine():
     Create and configure the pyttsx3 engine (cached singleton).
     Called once; reused on every TTS request for efficiency.
     """
+    
     try:
         import pyttsx3
     except ImportError:
@@ -60,6 +63,7 @@ def _get_engine():
             logger.warning(f"Voice index {TTS_VOICE_INDEX} not found — using default")
 
     return engine
+    
 
 
 def text_to_speech(text: str, output_path: str = None, play_audio: bool = True) -> str:
@@ -75,6 +79,8 @@ def text_to_speech(text: str, output_path: str = None, play_audio: bool = True) 
     Returns:
         Path to saved WAV file (or None if only spoken)
     """
+    if os.getenv("DISABLE_TTS", "false").lower() == "true":
+        return b""
     if not text.strip():
         logger.warning("Empty text passed to TTS — skipping")
         return None

@@ -94,7 +94,7 @@ async def list_models():
     models = list_local_models()
     return {
         "models":        models,
-        "active_model":  os.getenv("OLLAMA_MODEL", "llama3"),
+        "active_model":  os.getenv("OLLAMA_MODEL", "qwen2:0.5b"),
     }
 
 

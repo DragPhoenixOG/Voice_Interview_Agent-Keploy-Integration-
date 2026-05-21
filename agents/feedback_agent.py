@@ -17,6 +17,11 @@ import logging
 from dotenv import load_dotenv
 from utils.ollama_client import chat
 from utils.prompts import get_feedback_prompt
+import ollama
+
+client = ollama.Client(
+    host="http://host.docker.internal:11434"
+)
 
 load_dotenv()
 logger = logging.getLogger(__name__)

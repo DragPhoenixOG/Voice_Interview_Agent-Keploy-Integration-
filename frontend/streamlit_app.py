@@ -21,7 +21,7 @@ import time
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-API_HOST    = os.getenv("API_HOST", "127.0.0.1")
+API_HOST = os.getenv("API_HOST", "localhost")
 API_PORT    = os.getenv("API_PORT", "8000")
 API_BASE    = f"http://{API_HOST}:{API_PORT}"
 SAMPLE_RATE = int(os.getenv("AUDIO_SAMPLE_RATE", "16000"))

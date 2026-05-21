@@ -18,7 +18,11 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2:0.5b")
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+# OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_BASE_URL = os.getenv(
+    "OLLAMA_BASE_URL",
+    "http://host.docker.internal:11434"
+)
 
 
 def _check_ollama_running():
@@ -98,7 +102,7 @@ def chat(
             "options": {
                 "temperature": temperature,
                 "num_predict": max_tokens,
-                "num_ctx": 512
+                "num_ctx": 4096
             },
         }
 

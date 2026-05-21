@@ -15,6 +15,11 @@ from utils.prompts import (
     get_followup_question_prompt,
     get_closing_prompt,
 )
+import ollama
+
+client = ollama.Client(
+    host="http://host.docker.internal:11434"
+)
 
 load_dotenv()
 logger = logging.getLogger(__name__)

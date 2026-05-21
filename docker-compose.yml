@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────
+# docker-compose.yml
+# Full stack: FastAPI app + Ollama LLM server
+# Used by Keploy for recording and replaying tests
+# ─────────────────────────────────────────────────────────────
+
+services:
+
+  # ── FastAPI Backend ──────────────────────────────────────────
+  interview-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: interview-app
+    ports:
+      - "8000:8000"
+    environment:
+      # Point to the Ollama container instead of localhost
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2:0.5b}
+      - WHISPER_MODEL=${WHISPER_MODEL:-base}
+      - MAX_QUESTIONS=${MAX_QUESTIONS:-8}
+      - TTS_RATE=${TTS_RATE:-165}
+      - TTS_VOLUME=${TTS_VOLUME:-1.0}
+      - TTS_VOICE_INDEX=${TTS_VOICE_INDEX:-0}
+      - KEPLOY_TEST_MODE=true
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - DISABLE_TTS=true
+    volumes:
+      - ./uploads:/app/uploads
+      - ./transcripts:/app/transcripts
+      - ./keploy:/app/keploy
+    # depends_on:
+    #   ollama:
+    #     condition: service_healthy
+    networks:
+      - interview-net
+    restart: unless-stopped
+
+  # ── Ollama LLM Server ────────────────────────────────────────
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: ollama-server
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama-models:/root/.ollama   # persist downloaded models
+  #   networks:
+  #     - interview-net
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 10
+  #     start_period: 30s
+  #   restart: unless-stopped
+
+volumes:
+  ollama-models:
+
+networks:
+  interview-net:
+    driver: bridge

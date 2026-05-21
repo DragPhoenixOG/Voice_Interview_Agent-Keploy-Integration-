@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────────
+# keploy.yml
+# Keploy configuration for Voice Interview Agent
+# Docs: https://keploy.io/docs/running-keploy/configuration-file/
+# ─────────────────────────────────────────────────────────────
+
+version: api.keploy.io/v1beta2
+
+# Path where Keploy stores test cases and mocks
+path: ./keploy
+
+# The command Keploy wraps to start your app
+command: "uvicorn app:app --host 0.0.0.0 --port 8000"
+
+# Your app's port
+port: 8000
+
+# How long (seconds) to wait for the app to be ready before running tests
+delay: 10
+
+# ── Noise Configuration ──────────────────────────────────────
+# Fields that change every run — Keploy will ignore these during comparison
+globalNoise:
+  global:
+    body:
+      - "session_id"        # UUID regenerated every session
+      - "created_at"        # ISO timestamp
+      - "saved_at"          # ISO timestamp
+      - "timestamp"         # message-level timestamps
+    header:
+      - "Date"              # HTTP Date header changes every request
+
+# ── Bypass Rules ─────────────────────────────────────────────
+# Keploy will NOT intercept calls to these hosts — they're real external calls
+# We bypass Ollama so it runs live (or mock it in CI)
+bypassRules:
+  - path: "http://ollama:11434"
+  - path: "http://localhost:11434"
+
+# ── Test Sets ────────────────────────────────────────────────
+# Keploy auto-creates test sets under ./keploy/
+# Each recorded session becomes: keploy/test-set-0/, test-set-1/, etc.
